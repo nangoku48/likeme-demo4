@@ -3,18 +3,15 @@
 // ★あなたのAPI Key
 const XUMM_API_KEY = 'bedbb175-1ab7-4fc8-a321-08d00ad4a1a5';
 
-// ★売上を受け取るアドレス（テストネット公式Faucet）
-// ここに送れば、あなたの残高は確実に減ります！
-const SHOP_WALLET = "r4t7MbqVYAPDN9nshQ8MyswsfHjCZrVwbJ";
+// ★あなたのアドレス（自分宛て送金用）
+const SHOP_WALLET = "r4t7MbqVYAPDN9nshQ8MyswsfHjCZrVwbJ"; 
 
-// Xaman SDK の準備
 let xumm = null;
 if (typeof Xumm !== 'undefined') {
     xumm = new Xumm(XUMM_API_KEY);
     console.log("Xaman SDK initialized");
 }
 
-// 状態管理
 const state = {
   connected: false,
   account: null,
@@ -22,14 +19,12 @@ const state = {
   history: []
 };
 
-// 商品データ
 const products = [
   { id: "camera_basic", name: "📸 Basic Camera NFT", desc: "Selfie to Earn 必須アイテム", price: 5 },
   { id: "lens_comment", name: "🔍 Social Lens", desc: "コメント機能解放", price: 2 },
   { id: "film_10", name: "🎞 Film Pack", desc: "フィルム10枚", price: 1 },
 ];
 
-// DOM要素
 const connectBtn = document.getElementById("connectBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const statusEl = document.getElementById("status");
@@ -38,41 +33,29 @@ const productListEl = document.getElementById("productList");
 const historyListEl = document.getElementById("historyList");
 const dashboardEl = document.getElementById("dashboard");
 
-// 初期化
 document.addEventListener("DOMContentLoaded", () => {
-    console.log("App loaded");
     renderProducts();
     renderDashboard();
     checkLogin();
 });
 
-// --- ログイン関連 ---
-
 async function checkLogin() {
     if(!xumm) return;
     try {
         const account = await xumm.user.account;
-        if (account) {
-            console.log("User already logged in:", account);
-            onLoginSuccess(account);
-        }
-    } catch(e) {
-        console.log("Not logged in");
-    }
+        if (account) onLoginSuccess(account);
+    } catch(e) { console.log("Not logged in"); }
 }
 
 if (connectBtn) {
     connectBtn.addEventListener("click", async () => {
-        if(!xumm) return alert("SDKエラー: xumm.min.jsが読み込まれていません");
+        if(!xumm) return alert("SDKエラー");
         try {
-            console.log("Connecting...");
             const result = await xumm.authorize();
             if (result && result.me && result.me.account) {
                 onLoginSuccess(result.me.account);
             }
-        } catch (e) {
-            console.error("Auth Error:", e);
-        }
+        } catch (e) { console.error(e); }
     });
 }
 
@@ -88,13 +71,11 @@ if (logoutBtn) {
 function onLoginSuccess(account) {
     state.connected = true;
     state.account = account;
-    
     statusEl.textContent = "ステータス: 接続済み (Testnet) ✅";
     statusEl.style.color = "#2ecc71";
     accountEl.textContent = `アドレス: ${account}`;
     connectBtn.style.display = "none";
     logoutBtn.style.display = "inline-block";
-
     renderDashboard();
 }
 
@@ -106,8 +87,6 @@ function renderUI_LoggedOut() {
     logoutBtn.style.display = "none";
     renderDashboard();
 }
-
-// --- 商品描画 ---
 
 function renderProducts() {
     if (!productListEl) return;
@@ -129,62 +108,71 @@ function renderProducts() {
     });
 }
 
-// --- ★本物の決済処理 ---
-
+// --- ★ここが診断機能付きの購入処理 ---
 window.handleRealBuy = async function(productId) {
     if (!state.connected) return alert("まずはウォレットを接続してください！");
 
     const product = products.find(p => p.id === productId);
     if (!product) return;
 
-    const confirmed = confirm(`${product.name} を ${product.price} XRP で購入しますか？\n(スマホに署名通知が届きます)`);
-    if (!confirmed) return;
+    if(!confirm(`${product.name} を購入しますか？`)) return;
 
-    statusEl.textContent = "スマホで署名してください... 📱";
+    statusEl.textContent = "通信中... ⏳";
 
     try {
+        // 送金データ
         const payload = {
             TransactionType: "Payment",
-            Destination: SHOP_WALLET,
+            Destination: SHOP_WALLET, // 自分宛て
             Amount: (product.price * 1000000).toString(),
-            DestinationTag: 2025 // ★宛先タグ（これでエラー回避！）
+            DestinationTag: 2025 // ★これが「自分宛て」を通すための鍵！
         };
 
+        console.log("送信データ:", payload);
+
+        // Xamanに送信
         const created = await xumm.payload.create(payload);
         
-        if (created) {
-            xumm.xapp.openSignRequest(created);
-
-            const subscription = await xumm.payload.subscribe(created, (event) => {
-                if (typeof event.data.signed !== 'undefined') {
-                    return event.data;
-                }
-            });
-
-            if (subscription.created.signed) {
-   statusEl.textContent = "決済完了！ブロックチェーンに記録されました 🎉";
-                
-                if (productId === 'camera_basic') state.inventory.camera_basic++;
-                if (productId === 'lens_comment') state.inventory.lens_comment++;
-                if (productId === 'film_10') state.inventory.film_shots += 10;
-
-                addHistory(product.name, product.price, subscription.payload.txid);
-                renderDashboard();
-            } else {
-                statusEl.textContent = "署名が拒否されました 😢";
-            }
+        // ★ここがポイント：作成できたかチェック
+        if (!created) {
+            alert("エラー：注文書の作成に失敗しました（理由はコンソールを見てください）");
+            return;
         }
+
+        console.log("作成成功:", created);
+
+        // 正常なら署名画面を開く
+        xumm.xapp.openSignRequest(created);
+
+        const subscription = await xumm.payload.subscribe(created, (event) => {
+            if (typeof event.data.signed !== 'undefined') return event.data;
+        });
+
+        if (subscription.created.signed) {
+            statusEl.textContent = "決済完了！🎉";
+            alert("✅ 成功しました！");
+            
+            if (productId === 'camera_basic') state.inventory.camera_basic++;
+            if (productId === 'lens_comment') state.inventory.lens_comment++;
+            if (productId === 'film_10') state.inventory.film_shots += 10;
+
+            addHistory(product.name, product.price, subscription.payload.txid);
+            renderDashboard();
+        } else {
+            statusEl.textContent = "キャンセルされました";
+        }
+
     } catch (e) {
-        console.error(e);
-        statusEl.textContent = "エラーが発生しました";
+        console.error("通信エラー詳細:", e);
+        // ★エラーの内容を画面に出す
+        alert("【通信エラー】\nXamanがリクエストを拒否しました。\n\n原因の可能性:\n・APIキーが無効\n・アドレスが間違っている\n\nコンソールの赤文字を確認してください！");
+        statusEl.textContent = "エラー発生 ❌";
     }
 };
 
-// 履歴追加
 function addHistory(name, price, txHash) {
     const now = new Date();
     const timeStr = `${now.getHours()}:${String(now.getMinutes()).padStart(2, '0')}`;
-    
     const div = document.createElement("div");
     div.className = "history-item";
     div.innerHTML = `
@@ -197,13 +185,12 @@ function addHistory(name, price, txHash) {
             <span>-${price} XRP</span>
         </div>
         <div style="font-size:0.7rem; color:#555; margin-top:4px;">
-            TX: <a href="https://test.bithomp.com/${txHash}" target="_blank" style="color:#00a3ff;">${txHash.substring(0, 10)}...</a>
+            TX: ${txHash.substring(0, 10)}...
         </div>
     `;
     if (historyListEl) historyListEl.prepend(div);
 }
 
-// ダッシュボード描画
 function renderDashboard() {
   if (!dashboardEl) return;
   const inv = state.inventory;
