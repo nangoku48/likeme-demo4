@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Selfie to Earn カメラ販売所デモ</title>
+  <link rel="stylesheet" href="style.css" />
+  
+  <script src="https://xumm.app/assets/cdn/xumm.min.js"></script>
+  
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <main class="layout">
+    <section class="panel">
+      <header class="header">
+        <h1>📸 Selfie to Earn カメラ販売所（デモ）</h1>
+        <p class="subtitle">
+          Xaman でウォレット接続 → アイテム購入のフロー体験<br />
+          ※テストネットで実際に署名を行います
+        </p>
+      </header>
+
+      <div class="card connect-card">
+        <h2>1. ウォレット接続（デモ）</h2>
+        <p class="hint">
+          下のボタンを押すと、Xamanでログインします。
+        </p>
+        <div class="connection-row">
+          <button id="connectBtn" class="btn-primary">🔗 Xaman で接続</button>
+          <button id="logoutBtn" class="btn-secondary" style="display: none;">👋 切断</button>
+        </div>
+        <div class="status-row">
+            <p id="status">ステータス: 未接続</p>
+            <p id="account" class="account-display">アドレス: （未接続）</p>
+        </div>
+        <p id="error" class="error"></p>
+      </div>
+
+      <div class="card">
+        <h2>2. カメラ / レンズ / フィルムを購入</h2>
+        <p class="hint">接続後、アイテムを選んで購入フロー（署名体験）に進んでください。</p>
+        <div id="productList" class="product-list">
+            </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="card">
+        <h2>3. 購入履歴（トランザクション）</h2>
+        <p class="small">署名完了後、ここにテストトランザクション履歴が記録されます。</p>
+        <div id="historyList" class="history-list empty-state">
+          まだ購入履歴はありません。
+        </div>
+      </div>
+
+      <div class="card highlight-card">
+        <h2>4. マイダッシュボード（インベントリ）</h2>
+        <p class="small">保有しているカメラ・レンズ・フィルムの残量管理画面です。</p>
+        <div id="dashboard" class="dashboard">
+          </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

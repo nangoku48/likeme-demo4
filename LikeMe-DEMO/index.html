@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LikeMe ホーム</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://xumm.app/assets/cdn/xumm.min.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body class="landing">
+  <div class="landing-container">
+    <div class="left-logo">
+       <img src="images/likeme-logo.png" alt="LikeMe" onerror="this.style.display='none'">
+    </div>
+
+    <header class="landing-header">
+      <div class="logo-area">
+        <strong style="font-size:1.5rem;">LikeMe</strong> <span style="background:black; color:white; padding:2px 6px; font-size:0.7rem; border-radius:4px;">beta</span>
+      </div>
+      <div class="wallet-info">
+        <span>接続: </span>
+        <span id="connectedAddress">未接続</span>
+      </div>
+    </header>
+
+    <div class="landing-text-block">
+      <h1 class="landing-title">「好き」が、<br>お金になる</h1>
+      <p class="landing-sub">
+        写真や投稿に「Like」を集めて、<br>
+        クリエイターもファンも報酬がもらえる<br>
+        新しいソーシャルリワードサービス。
+      </p>
+      
+      <div class="landing-buttons">
+        <button id="connectBtn" class="btn primary">ウォレット接続して始める</button>
+        
+        <button id="logoutBtn" class="btn secondary" style="display:none; background-color:#333; color:white; border:none;">ログアウト（切断）</button>
+        
+        <a id="demoLink" href="profile.html" class="btn secondary">デモ画面を見る</a>
+        <a id="moreLink" href="features.html" class="btn secondary">機能詳細</a>
+      </div>
+      
+      <p class="landing-note" style="font-size:0.8rem; color:#999;">※ テスト環境(Testnet)で動作します</p>
+    </div>
+  </div>
+</body>
+</html>

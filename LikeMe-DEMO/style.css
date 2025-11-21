@@ -1,0 +1,128 @@
+/* --- 基本設定 --- */
+body {
+  margin: 0;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  color: #1f2937;
+  line-height: 1.6;
+}
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; padding: 0; margin: 0; }
+img { max-width: 100%; display: block; }
+
+/* --- ボタン --- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  padding: 12px 24px; border-radius: 30px; font-weight: bold;
+  cursor: pointer; border: none; font-size: 14px; transition: 0.2s;
+}
+.btn:hover { transform: translateY(-2px); opacity: 0.9; }
+.btn.primary { background: #ff4757; color: white; }
+.btn.secondary { background: #fff; color: #555; border: 1px solid #ddd; }
+.btn-white { background-color: #0095f6; color: #fff; }
+
+.logout-btn {
+  padding: 8px 16px; border-radius: 20px; border: 1px solid #ccc;
+  background: #f9f9f9; color: #666; cursor: pointer; font-size: 12px;
+}
+
+/* --- ヘッダー --- */
+.page-header, .landing-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 24px; background: rgba(255,255,255,0.9);
+  backdrop-filter: blur(10px); position: relative; z-index: 100;
+}
+.wallet-info {
+  font-size: 12px; background: #f1f2f6; padding: 6px 12px;
+  border-radius: 20px; color: #555; font-family: monospace;
+}
+
+/* --- Home (Landing) --- */
+body.landing {
+  background: radial-gradient(circle at 15% 25%, rgba(199, 228, 255, 0.4), transparent 40%),
+              radial-gradient(circle at 85% 75%, rgba(255, 200, 220, 0.4), transparent 40%), #ffffff;
+  min-height: 100vh; overflow-x: hidden;
+}
+.landing-container {
+  max-width: 1000px; margin: 0 auto; padding: 2rem;
+  height: 100vh; position: relative; box-sizing: border-box;
+}
+.left-logo {
+  position: absolute; left: 5%; top: 45%; transform: translateY(-50%); z-index: 10;
+}
+.left-logo img { width: 380px; filter: drop-shadow(0px 15px 25px rgba(0,0,0,0.15)); }
+.landing-text-block {
+  margin-left: 45%; margin-top: 15vh; text-align: right;
+}
+.landing-title { font-size: 3.5rem; font-weight: 800; color: #ff4757; margin-bottom: 1rem; line-height: 1.2; }
+.landing-buttons { display: flex; justify-content: flex-end; gap: 10px; }
+
+/* --- Profile --- */
+body.profile-page { background: #fafafa; }
+.page-container { max-width: 960px; margin: 0 auto; }
+.profile-main { display: grid; grid-template-columns: 1fr 320px; gap: 30px; padding: 20px; }
+
+.feed-card { background: white; border: 1px solid #dbdbdb; border-radius: 8px; margin-bottom: 24px; }
+.feed-header { padding: 14px; display: flex; align-items: center; }
+.feed-avatar {
+  width: 32px; height: 32px; background: #ff4757; border-radius: 50%;
+  color: white; display: flex; align-items: center; justify-content: center; margin-right: 10px; font-size: 10px;
+}
+.feed-actions { padding: 12px; display: flex; gap: 12px; }
+.vote-btn { flex-grow: 1; background: #ff4757; color: white; border-radius: 8px; border:none; padding: 10px; font-weight:bold; cursor: pointer;}
+.icon-btn { background: none; border: none; font-size: 1.4rem; cursor: pointer; }
+.feed-notification { margin: 0 12px 12px; background: #fff5f5; color: #c0392b; padding: 8px 12px; border-radius: 6px; font-size: 0.9rem; }
+.feed-stats-footer { padding: 12px; border-top: 1px solid #eee; font-size: 0.9rem; color: #888; }
+
+.sidebar-card { background: white; border: 1px solid #dbdbdb; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
+.profile-name { font-weight: bold; font-size: 1.1rem; }
+.stats-value { font-size: 2rem; font-weight: bold; color: #ff4757; }
+.ranking-list li { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+.rank-num { font-weight: bold; color: #ffd700; margin-right: 10px; font-size: 1.2rem; }
+
+/* --- Features --- */
+body.features-page { background: white; }
+.header-section { text-align: center; padding: 3rem 1rem; background: #f9f9f9; }
+.features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; padding: 3rem 2rem; max-width: 1100px; margin: 0 auto; }
+.feature-card { text-align: center; padding: 2rem; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid #eee; }
+.icon-wrapper { font-size: 2.5rem; color: #ff4757; margin-bottom: 1rem; }
+
+/* --- スマホ対応 --- */
+@media (max-width: 768px) {
+  .landing-container { height: auto; padding-bottom: 4rem; }
+  .left-logo { position: static; transform: none; text-align: center; margin: 2rem auto; }
+  .left-logo img { width: 60%; max-width: 250px; margin: 0 auto; }
+  .landing-text-block { margin-left: 0; margin-top: 1rem; text-align: center; }
+  .landing-buttons { justify-content: center; flex-wrap: wrap; }
+  .profile-main { grid-template-columns: 1fr; }
+  .sidebar-column { order: -1; }
+}
+/* --- ランキングリストの装飾 --- */
+.ranking-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 要素の間隔 */
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+/* 小さな写真 */
+.rank-thumb {
+  width: 40px;
+  height: 40px;
+  border-radius: 6px;
+  object-fit: cover; /* 写真が潰れないようにトリミング */
+  background: #ddd;
+}
+
+/* 投稿タイトルとスコア */
+.rank-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 0.9rem;
+}
+
+.rank-score {
+  font-size: 0.75rem;
+  color: #ff4757; /* ブランドカラー */
+  font-weight: bold;
+}
